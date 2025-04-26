@@ -7,6 +7,7 @@ use App\Entity\Commentaire;
 use App\Form\ArticleType;
 use App\Form\CommentaireType;
 use App\Repository\ArticleRepository;
+use App\Service\DeezerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +49,7 @@ final class ArticleController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, Article $article, EntityManagerInterface $em): Response
+    public function show(Request $request, Article $article, EntityManagerInterface $em, DeezerService $deezerService): Response
     {
         $commentaire = new Commentaire();
         $form = null;
@@ -69,9 +70,12 @@ final class ArticleController extends AbstractController
             }
         }
 
+        $deezerArtist = $deezerService->getArtistInfo($article->getArtiste());
+
         return $this->render('article/show.html.twig', [
             'article' => $article,
             'commentaireForm' => $form?->createView(),
+            'deezerArtist' => $deezerArtist,
         ]);
     }
 

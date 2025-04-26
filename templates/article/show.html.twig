@@ -40,6 +40,24 @@
             {% endif %}
         </div>
 
+        {% if deezerArtist is defined and deezerArtist %}
+            <hr>
+            <h3>🎧 Infos Deezer sur {{ deezerArtist.name }}</h3>
+            <div class="d-flex align-items-center mb-3">
+                <img src="{{ deezerArtist.image }}" alt="{{ deezerArtist.name }}" class="me-3 rounded" width="100">
+                <a href="{{ deezerArtist.link }}" class="btn btn-primary" target="_blank">Voir sur Deezer</a>
+            </div>
+
+            {% if deezerArtist.topTracks is not empty %}
+                <h5>Top titres :</h5>
+                <ul>
+                    {% for track in deezerArtist.topTracks %}
+                        <li>{{ track.title }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+
         <hr>
 
         <h3 class="mt-5">Commentaires</h3>
@@ -51,9 +69,21 @@
                         <strong>{{ commentaire.auteur.pseudo }}</strong>
                         <small class="text-muted">— {{ commentaire.createdAt|date('d/m/Y à H:i') }}</small>
                         <p class="mb-0 mt-1">{{ commentaire.contenu }}</p>
+
                         {% if commentaire.note is defined %}
-                            <small>Note : {{ commentaire.note }} / 5</small>
+                            <div class="mt-1">
+                                Note :
+                                {% for i in 1..5 %}
+                                    {% if i <= commentaire.note %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                                <small class="text-muted">({{ commentaire.note }}/5)</small>
+                            </div>
                         {% endif %}
+
                         {% if app.user and commentaire.auteur == app.user %}
                             <form method="post" action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" onsubmit="return confirm('Supprimer ce commentaire ?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_comment_' ~ commentaire.id) }}">
