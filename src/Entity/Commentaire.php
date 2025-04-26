@@ -28,6 +28,9 @@ class Commentaire
     #[ORM\JoinColumn(nullable: false)]
     private ?User $auteur = null;
 
+    #[ORM\Column]
+    private ?int $note = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +80,18 @@ class Commentaire
     public function setAuteur(?User $auteur): static
     {
         $this->auteur = $auteur;
+
+        return $this;
+    }
+
+    public function getNote(): ?int
+    {
+        return $this->note;
+    }
+
+    public function setNote(int $note): static
+    {
+        $this->note = $note;
 
         return $this;
     }

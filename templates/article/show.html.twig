@@ -51,6 +51,15 @@
                         <strong>{{ commentaire.auteur.pseudo }}</strong>
                         <small class="text-muted">— {{ commentaire.createdAt|date('d/m/Y à H:i') }}</small>
                         <p class="mb-0 mt-1">{{ commentaire.contenu }}</p>
+                        {% if commentaire.note is defined %}
+                            <small>Note : {{ commentaire.note }} / 5</small>
+                        {% endif %}
+                        {% if app.user and commentaire.auteur == app.user %}
+                            <form method="post" action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" onsubmit="return confirm('Supprimer ce commentaire ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_comment_' ~ commentaire.id) }}">
+                                <button class="btn btn-sm btn-outline-danger mt-2">Supprimer</button>
+                            </form>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
@@ -62,6 +71,7 @@
             <h4>Ajouter un commentaire</h4>
             {{ form_start(commentaireForm) }}
                 {{ form_row(commentaireForm.contenu) }}
+                {{ form_row(commentaireForm.note) }}
                 <button class="btn btn-primary">Envoyer</button>
             {{ form_end(commentaireForm) }}
         {% else %}
