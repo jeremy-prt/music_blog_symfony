@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Commentaire;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -18,18 +19,35 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre est obligatoire.")]
+    #[Assert\Length(
+        min: 10,
+        max: 255,
+        minMessage: "Le titre doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $titre = null;
-
+    
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Le contenu de l'article ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "Le contenu doit faire au moins {{ limit }} caractères."
+    )]
     private ?string $contenu = null;
-
+    
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le slug est obligatoire.")]
+    #[Assert\Length(max: 255)]
     private ?string $slug = null;
-
+    
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de l'artiste est requis.")]
+    #[Assert\Length(max: 255)]
     private ?string $artiste = null;
-
+    
     #[ORM\Column]
+    #[Assert\NotNull(message: "La date de publication est obligatoire.")]
     private ?\DateTimeImmutable $DatePublication = null;
 
     /**

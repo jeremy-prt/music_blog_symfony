@@ -1,11 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Article{% endblock %}
+{% block title %}Nouvel article{% endblock %}
 
 {% block body %}
-    <h1>Create new Article</h1>
+    <div class="container mt-4">
+        <h1>Créer un nouvel article</h1>
 
-    {{ include('article/_form.html.twig') }}
+        {# Affichage global des erreurs du formulaire #}
+        {% if form.vars.errors|length > 0 %}
+            <div class="alert alert-danger">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
 
-    <a href="{{ path('app_article_index') }}">back to list</a>
+        {# Inclusion du formulaire #}
+        {{ form_start(form) }}
+            {{ form_row(form.titre) }}
+            {{ form_row(form.slug) }}
+            {{ form_row(form.artiste) }}
+            {{ form_row(form.datePublication) }}
+            {{ form_row(form.contenu) }}
+
+            <button class="btn btn-success mt-3">Publier</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_article_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+    </div>
 {% endblock %}
