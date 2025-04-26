@@ -1,0 +1,4 @@
+<h1>{{ article.titre }}</h1>
+<p><strong>Artiste :</strong> {{ article.artiste }}</p>
+<p><strong>Date :</strong> {{ article.datePublication|date('d/m/Y') }}</p>
+<p>{{ article.contenu|nl2br }}</p>

@@ -13,6 +13,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Filesystem\Filesystem;
+use Dompdf\Dompdf;
+use App\Message\ExportPdf;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Route('/article')]
 final class ArticleController extends AbstractController
@@ -72,10 +76,18 @@ final class ArticleController extends AbstractController
 
         $deezerArtist = $deezerService->getArtistInfo($article->getArtiste());
 
+        $pdfPath = '/exports/article_' . $article->getId() . '.pdf'; // pour l'URL publique
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $fullPath = $projectDir . '/public' . $pdfPath; // chemin absolu sur le disque
+
+        $pdfExists = file_exists($fullPath);
+
         return $this->render('article/show.html.twig', [
             'article' => $article,
             'commentaireForm' => $form?->createView(),
             'deezerArtist' => $deezerArtist,
+            'pdfPath' => $pdfExists ? $pdfPath : null,
         ]);
     }
 
@@ -113,5 +125,14 @@ final class ArticleController extends AbstractController
         }
 
         return $this->redirectToRoute('app_article_index');
+    }
+    
+    #[Route('/{id}/export', name: 'app_article_export_pdf', methods: ['GET'])]
+    public function export(Article $article, MessageBusInterface $bus): Response
+    {
+        $bus->dispatch(new ExportPdf($article->getId()));
+    
+        $this->addFlash('success', 'Export en cours. Le PDF sera disponible sous peu.');
+        return $this->redirectToRoute('app_article_show', ['id' => $article->getId()]);
     }
 }
