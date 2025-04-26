@@ -43,7 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank(message: "Le mot de passe est obligatoire.")]
     #[Assert\Length(
         min: 8,
         max: 100,
