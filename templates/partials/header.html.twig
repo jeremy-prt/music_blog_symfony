@@ -1,0 +1,21 @@
+<header class="w-full bg-gray-900/80 backdrop-blur-sm shadow-sm fixed top-0 left-0 z-50">
+    <nav class="container mx-auto flex justify-between items-center p-4">
+        <div class="flex items-center space-x-8">
+            <a href="{{ path('app_home') }}" class="group">
+                <img src="{{ asset('images/logo.png') }}" alt="Aperçu blog musical" class="w-12 rounded-md transform transition-transform duration-500 group-hover:rotate-y-180">
+            </a>
+            <div class="space-x-4">
+                <a href="{{ path('app_home') }}" class="hover:text-violet-300 duration-300">Accueil</a>
+                <a href="{{ path('app_home') }}" class="hover:text-violet-300 duration-300">À propos</a>
+            </div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ path('app_login') }}" class="bg-white text-violet-700 hover:bg-violet-100 font-semibold py-2 px-6 rounded-md duration-300">
+                Connexion
+            </a>
+            <a href="{{ path('app_register') }}" class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-6 rounded-md duration-300">
+                Créer un compte
+            </a>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    <!-- Header -->
+    {% include 'partials/header.html.twig' %}
+
+    <div class="mt-20">
+        <section class="flex flex-col items-center justify-center px-6 text-center py-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 w-full max-w-4xl text-center">
+                La <span class="text-violet-500">Plateforme</span> où Musique<br>
+                rime avec <span class="text-violet-500">Partage</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-6">
+                Créez, explorez et commentez des articles
+                autour de vos artistes préférés. <br> Rejoignez notre communauté musicale !
+            </p>
+            <a href="{{ path('app_article_index') }}"
+                class="relative group inline-block text-white font-semibold py-3 px-6 rounded-md overflow-hidden
+                        bg-gradient-to-br from-violet-600 to-purple-700 shadow-lg
+                        transition-all duration-300 ease-in-out hover:brightness-110 hover:scale-105">
+                    <span class="absolute inset-0 w-full h-full bg-white opacity-0 group-hover:opacity-5 transition duration-300"></span>
+                    <span class="relative z-10">Découvrir les articles</span>
+                </a>
+        </section>
+        <section class="container mx-auto px-6 py-2 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 bg-gradient-to-tl from-gray-800 to-violet-900 rounded-lg shadow-md flex flex-col h-full transform transition-transform duration-300 hover:-translate-y-3">
+                    <h2 class="text-2xl font-semibold mb-4">Créer</h2>
+                    <p class="text-gray-300 flex-grow">
+                        Vous êtes passionné par un artiste ou un courant musical ? Rédigez un article, partagez votre vision, vos anecdotes, vos analyses, et faites rayonner votre passion auprès d’une communauté curieuse et réceptive.
+                    </p>
+                </div>
+                <div class="p-8 bg-gradient-to-br from-gray-700/70 to-gray-900/80 rounded-lg shadow-md flex flex-col h-full transform transition-transform duration-300 hover:-translate-y-3">
+                    <h2 class="text-2xl font-semibold mb-4">Explorer</h2>
+                    <p class="text-gray-300 flex-grow">
+                        Laissez-vous porter à travers un univers d’articles rédigés avec soin par d'autres passionnés. Chaque lecture est une nouvelle porte ouverte sur un style, un parcours, une émotion musicale.
+                    </p>
+                </div>
+                <div class="p-8 bg-gradient-to-br from-gray-800 to-violet-900 rounded-lg shadow-md flex flex-col h-full transform transition-transform duration-300 hover:-translate-y-3">
+                    <h2 class="text-2xl font-semibold mb-4">Commenter</h2>
+                    <p class="text-gray-300 flex-grow">
+                        Échangez avec les auteurs et lecteurs. Vos avis enrichissent le débat et créent un lien authentique autour de la musique. Que vous soyez novice ou expert, chaque voix compte !
+                    </p>
+                </div>
+            </div>
+        </section>
+       <section class="container mx-auto px-6 py-16">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 w-full text-center py-10">🪐 L’univers musical à découvrir</h2>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white shadow-lg md:col-span-2">
+                    <h3 class="text-xl font-bold mb-3">💡 Découvertes Hebdo</h3>
+                    <p class="text-sm">Chaque semaine, notre équipe sélectionne pour vous des articles captivants à ne pas manquer, pour nourrir votre curiosité musicale.</p>
+                </div>
+                <div class="bg-gradient-to-br from-gray-800 to-indigo-800 rounded-xl p-6 text-white shadow-lg md:col-span-2">
+                    <h3 class="text-xl font-bold mb-3">🌟 Focus Artiste</h3>
+                    <p class="text-sm">Zoom sur un artiste de la scène actuelle : interviews, analyses, dernières sorties et morceaux incontournables, tout y est.</p>
+                </div>
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white shadow-lg md:col-span-2">
+                    <h3 class="text-xl font-bold mb-3">🎧 Playlist de la Semaine</h3>
+                    <p class="text-sm">Découvrez une sélection de morceaux soigneusement choisis pour accompagner votre semaine en musique.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900rounded-xl p-6 text-white shadow-xl md:col-span-3">
+                    <h3 class="text-xl font-bold mb-3">🎤 Notre Communauté</h3>
+                    <p class="text-sm">Rejoignez un espace vivant où l’on débat, recommande, découvre ensemble. Ici, la musique est un dialogue permanent.</p>
+                </div>
+                <div class="bg-gradient-to-br from-gray-800 to-indigo-800 rounded-xl p-6 text-white shadow-lg md:col-span-3">
+                    <h3 class="text-xl font-bold mb-3">📅 Événements à venir</h3>
+                    <p class="text-sm">Ne manquez pas les prochains concerts, festivals et événements musicaux près de chez vous.</p>
+                </div>
+            </div>
+        </section>
+
+         <!-- Footer -->
+        {% include 'partials/footer.html.twig' %}
+    </div>
+</div>
+{% endblock %}
