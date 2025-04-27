@@ -10,7 +10,7 @@
         <div class="flex items-center justify-between mb-10">
             <h1 class="text-3xl font-extrabold">📰 Tous les articles</h1>
             <a href="{{ path('app_article_new') }}"
-               class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-md transition">
+               class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-md duration-300">
                 + Nouvel article
             </a>
         </div>
@@ -49,8 +49,7 @@
                     {% endif %}
                     <div class="p-6 flex flex-col justify-between flex-grow">
                         <div class="flex-grow">
-                            <h2 class="text-2xl lg:text-3xl font-extrabold mb-2 text-violet-400">{{ article.titre }}</h2>
-                            <p class="text-sm text-gray-400 mb-4">Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}</p>
+                            <h2 class="text-lg sm:text-xl md:text-2xl lg:text-2xl font-extrabold mb-2 text-violet-400">{{ article.titre }}</h2>                            <p class="text-sm text-gray-400 mb-4">Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}</p>
                             <p class="text-gray-300 mb-4 line-clamp-3">{{ article.contenu|u.truncate(160, '…') }}</p>
                             <p class="text-sm text-gray-500 italic">Artiste : {{ article.artiste }}</p>
                         </div>
