@@ -58,14 +58,14 @@
                     {{ form_widget(form._token) }}
                 </div>
 
-                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 rounded-md transition">
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 rounded-md transition cursor-pointer">
                     Enregistrer les modifications
                 </button>
             {{ form_end(form, { render_rest: false }) }}
 
             <div class="text-center mt-4">
                 <a href="{{ path('app_article_index') }}" class="text-sm text-gray-400 hover:text-white underline transition">
-                    Retour à la liste
+                    Retour à la liste des articles disponibles
                 </a>
             </div>
         </div>

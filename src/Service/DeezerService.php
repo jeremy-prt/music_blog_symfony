@@ -15,21 +15,21 @@ class DeezerService
         ]);
 
         $data = $response->toArray();
-
-        if (empty($data['data'])) {
-            return null;
-        }
+        if (empty($data['data'])) return null;
 
         $artist = $data['data'][0];
-
-        $topTracks = $this->client->request('GET', "https://api.deezer.com/artist/{$artist['id']}/top?limit=5")
-            ->toArray();
+        $artistDetails = $this->client->request('GET', "https://api.deezer.com/artist/{$artist['id']}")->toArray();
+        $topTracks = $this->client->request('GET', "https://api.deezer.com/artist/{$artist['id']}/top?limit=5")->toArray();
+        $albums = $this->client->request('GET', "https://api.deezer.com/artist/{$artist['id']}/albums?limit=3")->toArray();
 
         return [
-            'name' => $artist['name'],
-            'link' => $artist['link'],
-            'image' => $artist['picture_xl'],
+            'name' => $artistDetails['name'],
+            'image' => $artistDetails['picture_xl'],
+            'link' => $artistDetails['link'],
+            'fans' => $artistDetails['nb_fan'],
+            'hasRadio' => $artistDetails['radio'],
             'topTracks' => $topTracks['data'] ?? [],
+            'albums' => $albums['data'] ?? [],
         ];
     }
 }

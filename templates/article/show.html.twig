@@ -3,166 +3,190 @@
 {% block title %}{{ article.titre }}{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="text-red-500">{{ article.titre }}</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    {% include 'partials/header.html.twig' %}
 
-        <table class="table table-bordered mt-4">
-            <tbody>
-                <tr>
-                    <th>ID</th>
-                    <td>{{ article.id }}</td>
-                </tr>
-                <tr>
-                    <th>Contenu</th>
-                    <td>{{ article.contenu|nl2br }}</td>
-                </tr>
-                <tr>
-                    <th>Slug</th>
-                    <td>{{ article.slug }}</td>
-                </tr>
-                <tr>
-                    <th>Artiste</th>
-                    <td>{{ article.artiste }}</td>
-                </tr>
-                <tr>
-                    <th>Date de publication</th>
-                    <td>{{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '' }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="mb-3">
-            <a href="{{ path('app_article_index') }}" class="btn btn-secondary">Retour à la liste</a>
-            <button id="export-pdf-btn" class="btn btn-outline-dark ms-2" style="display: none;">
-                Exporter en PDF
-            </button>
-
-           <div id="pdf-button-container" style="display: none;">
-                <a id="open-pdf-button" href="#" class="btn btn-success ms-2" target="_blank" style="display: none;">
-                    Ouvrir le PDF
-                </a>
+    <!-- Popup -->
+    <div id="popup" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-br from-gray-700 to-gray-900 text-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h2 class="text-xl font-bold mb-4 text-center">Message important</h2>
+            <p class="text-sm text-gray-300 mb-4">
+                Désolé, avec le manque de temps, je n'ai pas pu designer cette page comme je le voulais à 100%. Perso, je l'apprécie pas de ouf, mais on est là juste pour tester les fonctionnalités du TP, donc ça fera l'affaire !
+            </p>
+            <div class="flex justify-end">
+                <button id="close-popup" class="cursor-pointer bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md transition">
+                    Fermer
+                </button>
             </div>
+        </div>
+    </div>
 
-            <p id="pdf-status" class="text-info mt-2" style="display: none;">Génération du PDF en cours...</p>
 
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-warning">Modifier</a>
-                {{ include('article/_delete_form.html.twig') }}
-            {% endif %}
+    <div class="container mx-auto px-6 pt-36 pb-16 relative">
+
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="flex justify-end gap-4 mb-4">
+            <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded-md shadow duration-300">
+                <i class="fas fa-edit"></i> Modifier
+            </a>
+                {{ include('article/_delete_form.html.twig', { 'class': 'bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded-md shadow duration-300 flex items-center gap-2' }) }}
+        </div>
+        {% endif %}
+
+        <h1 class="text-4xl font-extrabold text-violet-400 mb-2">{{ article.titre }}</h1>
+        <p class="text-sm text-gray-400 italic mb-6">Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '' }}</p>
+
+        <div class="bg-gray-900 rounded-xl p-6 shadow-lg mb-10">
+            <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ article.contenu }}</p>
+            <div class="mt-6 border-t border-gray-700 pt-4">
+                <p class="text-sm text-gray-500 italic">Artiste cité : {{ article.artiste }}</p>
+            </div>
         </div>
 
-        {% if deezerArtist is defined and deezerArtist %}
-            <hr>
-            <h3>🎧 Infos Deezer sur {{ deezerArtist.name }}</h3>
-            <div class="d-flex align-items-center mb-3">
-                <img src="{{ deezerArtist.image }}" alt="{{ deezerArtist.name }}" class="me-3 rounded" width="100">
-                <a href="{{ deezerArtist.link }}" class="btn btn-primary" target="_blank">Voir sur Deezer</a>
+        <div class="flex justify-end gap-4 items-center mb-12">
+            <button id="export-pdf-btn" class="flex items-center gap-2 text-sm bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md shadow duration-300 hidden cursor-pointer">
+                <i class="fas fa-file-export"></i> Générer le PDF
+            </button>
+            <div id="pdf-button-container" class="hidden">
+                <a id="open-pdf-button" href="#" class="flex items-center gap-2 text-sm bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md shadow duration-300" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Voir le PDF
+                </a>
+            </div>
+            <p id="pdf-status" class="text-sm text-gray-400 hidden">⏳ Génération du PDF en cours...</p>
+        </div>
+
+       {% if deezerArtist is defined and deezerArtist %}
+<div class="bg-gray-900 rounded-xl p-8 shadow-md mb-12">
+    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <i class="fas fa-info-circle text-violet-400"></i> Informations Deezer
+    </h3>
+
+    <div class="flex flex-row items-start gap-8">
+      <img src="{{ deezerArtist.image }}" alt="{{ deezerArtist.name }}"
+             class="rounded-xl object-cover w-40 h-40 shadow-md">
+        <div class="space-y-4">
+            <h2 class="text-3xl font-bold text-white ">{{ deezerArtist.name }}</h2>
+
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-300">
+                <span class="flex items-center gap-1">
+                    <i class="fas fa-users text-violet-500"></i> {{ deezerArtist.fans | number_format(0, ',', ' ') }} fans
+                </span>
+                {% if deezerArtist.hasRadio %}
+                <span class="flex items-center gap-1">
+                    <i class="fas fa-broadcast-tower text-violet-500"></i> Radio disponible
+                </span>
+                {% endif %}
             </div>
 
-            {% if deezerArtist.topTracks is not empty %}
-                <h5>Top titres :</h5>
-                <ul>
-                    {% for track in deezerArtist.topTracks %}
-                        <li>{{ track.title }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endif %}
-
-        <hr>
-
-        <h3 class="mt-5">Commentaires</h3>
-
-        {% if article.commentaires is not empty %}
-            <ul class="list-group mb-4">
-                {% for commentaire in article.commentaires %}
-                    <li class="list-group-item">
-                        <strong>{{ commentaire.auteur.pseudo }}</strong>
-                        <small class="text-muted">— {{ commentaire.createdAt|date('d/m/Y à H:i') }}</small>
-                        <p class="mb-0 mt-1">{{ commentaire.contenu }}</p>
-
-                        {% if commentaire.note is defined %}
-                            <div class="mt-1">
-                                Note :
-                                {% for i in 1..5 %}
-                                    {% if i <= commentaire.note %}
-                                        ⭐
-                                    {% else %}
-                                        ☆
-                                    {% endif %}
-                                {% endfor %}
-                                <small class="text-muted">({{ commentaire.note }}/5)</small>
-                            </div>
-                        {% endif %}
-
-                        {% if app.user and commentaire.auteur == app.user %}
-                            <form method="post" action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" onsubmit="return confirm('Supprimer ce commentaire ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_comment_' ~ commentaire.id) }}">
-                                <button class="btn btn-sm btn-outline-danger mt-2">Supprimer</button>
-                            </form>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Aucun commentaire pour le moment.</p>
-        {% endif %}
-
-        {% if commentaireForm is defined and commentaireForm is not null %}
-            <h4>Ajouter un commentaire</h4>
-            {{ form_start(commentaireForm) }}
-                {{ form_row(commentaireForm.contenu) }}
-                {{ form_row(commentaireForm.note) }}
-                <button class="btn btn-primary">Envoyer</button>
-            {{ form_end(commentaireForm) }}
-        {% else %}
-            <p class="mt-3"><a href="{{ path('app_login') }}">Connectez-vous</a> pour commenter cet article.</p>
-        {% endif %}
+            <a href="{{ deezerArtist.link }}" target="_blank"
+               class="inline-flex items-center gap-2 font-medium text-sm bg-violet-600 hover:bg-violet-700 text-white py-2 px-4 rounded transition">
+                <i class="fas fa-external-link-alt"></i> Voir sur Deezer
+            </a>
+        </div>
     </div>
-    <script>
-  document.addEventListener('DOMContentLoaded', () => {
+
+    {% if deezerArtist.topTracks is not empty %}
+    <div class="mt-10">
+        <h4 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+         Top titres
+        </h4>
+        <ul class="flex flex-wrap gap-4">
+            {% for track in deezerArtist.topTracks %}
+            <li class="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded shadow text-sm text-gray-200">
+                <i class="fas fa-music text-violet-400"></i> {{ track.title }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if deezerArtist.albums is defined and deezerArtist.albums is not empty %}
+    <div class="mt-10">
+        <h4 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            Albums récents
+        </h4>
+        <div class="flex flex-wrap gap-6">
+            {% for album in deezerArtist.albums %}
+            <div class="flex flex-col items-center text-center bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <img src="{{ album.cover_medium }}" alt="{{ album.title }}"
+                     class="w-28 h-28 object-cover rounded mb-2">
+                <span class="text-sm text-gray-200 leading-tight">{{ album.title }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+        {% include 'commentaire/index.html.twig' with { article: article, commentaireForm: commentaireForm } %}
+    </div>
+
+    {% include 'partials/footer.html.twig' %}
+</div>
+
+<script>
+  document.addEventListener('turbo:load', () => {
     const pdfUrl = "{{ asset('/exports/article_' ~ article.id ~ '.pdf') }}";
+    const exportBtn = document.getElementById('export-pdf-btn');
     const container = document.getElementById('pdf-button-container');
     const button = document.getElementById('open-pdf-button');
-    const exportBtn = document.getElementById('export-pdf-btn');
+    const status = document.getElementById('pdf-status');
 
-    if (!container || !button || !exportBtn) return;
+    if (!exportBtn || !container || !button || !status) return;
 
-    // Vérification initiale si le PDF existe déjà
-    fetch(pdfUrl, { method: 'HEAD' })
+    const cacheBypassUrl = () => pdfUrl + '?v=' + Date.now();
+
+    const hideAll = () => {
+      exportBtn.classList.add('hidden');
+      container.classList.add('hidden');
+      button.classList.add('hidden');
+      status.classList.add('hidden');
+    };
+
+    const showGenerate = () => {
+      exportBtn.classList.remove('hidden');
+      container.classList.add('hidden');
+      button.classList.add('hidden');
+      status.classList.add('hidden');
+    };
+
+    const showView = () => {
+      exportBtn.classList.add('hidden');
+      container.classList.remove('hidden');
+      button.classList.remove('hidden');
+      status.classList.add('hidden');
+      button.href = cacheBypassUrl();
+    };
+
+    fetch(cacheBypassUrl(), { method: 'HEAD', cache: 'no-store' })
       .then(response => {
         if (response.ok) {
-          button.href = pdfUrl;
-          container.style.display = 'block';
-          button.style.display = 'inline-block';
-          exportBtn.style.display = 'none';
+          showView();
         } else {
-          exportBtn.style.display = 'inline-block';
+          showGenerate();
         }
       })
       .catch(() => {
-        exportBtn.style.display = 'inline-block';
+        showGenerate();
       });
 
     exportBtn.addEventListener('click', () => {
-        document.getElementById('pdf-status').style.display = 'block';
-        fetch("{{ path('app_article_export_pdf', {'id': article.id}) }}")
-            .then(() => {
-                const interval = setInterval(() => {
-                    fetch(pdfUrl, { method: 'HEAD' })
-                        .then(response => {
-                            if (response.ok) {
-                                button.href = pdfUrl;
-                                container.style.display = 'block';
-                                button.style.display = 'inline-block';
-                                exportBtn.style.display = 'none';
-                                document.getElementById('pdf-status').style.display = 'none';
-                                clearInterval(interval);
-                            }
-                        })
-                        .catch(() => {});
-                }, 5000);
-            });
+      showGenerate();
+      status.classList.remove('hidden');
+
+      fetch("{{ path('app_article_export_pdf', {'id': article.id}) }}")
+        .then(() => {
+          const interval = setInterval(() => {
+            fetch(cacheBypassUrl(), { method: 'HEAD', cache: 'no-store' })
+              .then(response => {
+                if (response.ok) {
+                  showView();
+                  clearInterval(interval);
+                }
+              });
+          }, 4000);
+        });
     });
   });
 </script>

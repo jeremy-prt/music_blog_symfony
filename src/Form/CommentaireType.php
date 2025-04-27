@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CommentaireType extends AbstractType
 {
@@ -21,10 +22,16 @@ class CommentaireType extends AbstractType
                     'placeholder' => 'Exprimez-vous...',
                 ],
             ])
-            ->add('note', IntegerType::class, [
+            ->add('note', ChoiceType::class, [
                 'label' => 'Note (1 à 5)',
-                'attr' => ['min' => 1, 'max' => 5],
-            ]);
+                'choices' => [
+                    '1' => 1,
+                    '2' => 2,
+                    '3' => 3,
+                    '4' => 4,
+                    '5' => 5,
+                ],
+                ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

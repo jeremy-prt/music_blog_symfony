@@ -17,6 +17,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use Dompdf\Dompdf;
 use App\Message\ExportPdf;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\VarDumper\VarDumper;
+use Psr\Log\LoggerInterface;
+
 
 #[Route('/article')]
 final class ArticleController extends AbstractController
@@ -52,7 +55,7 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $article->setDatePublication(new \DateTimeImmutable()); // Définit automatiquement la date
+            $article->setDatePublication(new \DateTimeImmutable()); 
             $em->persist($article);
             $em->flush();
 
@@ -121,19 +124,32 @@ final class ArticleController extends AbstractController
             'article' => $article,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_article_delete', methods: ['POST'])]
-    public function delete(Request $request, Article $article, EntityManagerInterface $em): Response
+    #[Route('/{id}/delete', name: 'app_article_delete3', methods: ['POST'])]
+    public function delete(Request $request, Article $article, EntityManagerInterface $em, LoggerInterface $logger): Response
     {
+        $logger->info('Suppression demandée pour l\'article ID : ' . $article->getId());
+    
         if (!$this->isGranted('ROLE_ADMIN')) {
+            $logger->warning('Tentative de suppression non autorisée.');
             return $this->redirectToRoute('app_access_denied');
         }
-
-        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->getPayload()->getString('_token'))) {
+    
+        $token = $request->request->get('_token');
+        $expectedToken = 'delete' . $article->getId();
+    
+        $logger->info('Token reçu : ' . $token);
+        $logger->info('Token attendu : ' . $expectedToken);
+    
+        if ($this->isCsrfTokenValid($expectedToken, $token)) {
             $em->remove($article);
             $em->flush();
+            $logger->info('Article supprimé avec succès.');
+    
+            $this->addFlash('success', 'Article supprimé avec succès.');
+        } else {
+            $logger->error('Échec de la validation du token CSRF.');
         }
-
+    
         return $this->redirectToRoute('app_article_index');
     }
     
