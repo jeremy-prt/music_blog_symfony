@@ -1,4 +1,4 @@
-<header class="w-full bg-gray-900/80 backdrop-blur-sm shadow-sm fixed top-0 left-0 z-50">
+<header id="main-header" class="w-full fixed top-0 left-0 z-50 transition-all duration-300 custom-header">
     <nav class="container mx-auto flex justify-between items-center p-4">
         <div class="flex items-center space-x-8">
             <a href="{{ path('app_home') }}" class="group">
@@ -19,3 +19,22 @@
         </div>
     </nav>
 </header>
+
+<style>
+    .custom-header.scrolled {
+        background-color: rgba(17, 24, 39, 0.85); /* gris foncé semi-transparent */
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<script>
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('main-header');
+        if (window.scrollY > 0) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+</script>
