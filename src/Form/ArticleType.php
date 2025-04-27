@@ -16,6 +16,7 @@ class ArticleType extends AbstractType
             ->add('titre')
             ->add('slug')
             ->add('artiste')
+            ->add('categorie')
             ->add('datePublication', DateTimeType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de publication',

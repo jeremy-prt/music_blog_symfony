@@ -17,32 +17,51 @@
 
         {% if articles is not empty %}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {% for entry in articles %}
-                    {% set article = entry.article %}
-                    <div class="bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition duration-300 flex flex-col justify-between overflow-hidden">
-                        {% if entry.image %}
-                            <img src="{{ entry.image }}" alt="Image de {{ article.artiste }}"
-                                 class="w-full h-48 object-cover">
-                        {% endif %}
-                        <div class="p-6 flex flex-col justify-between flex-grow">
-                            <div>
-                                <h2 class="text-2xl font-bold mb-2 text-violet-400">{{ article.titre }}</h2>
-                                <p class="text-sm text-gray-400 mb-4">
-                                    Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}
-                                </p>
-                                <p class="text-gray-300 mb-4 line-clamp-3">{{ article.contenu|u.truncate(160, '…') }}</p>
-                                <p class="text-sm text-gray-500 italic">Artiste : {{ article.artiste }}</p>
-                            </div>
-                            <div class="mt-6 flex justify-between items-center">
-                                <a href="{{ path('app_article_show', {'id': article.id}) }}"
-                                   class="text-sm text-violet-400 hover:text-violet-300 transition">Voir</a>
-                                <a href="{{ path('app_article_edit', {'id': article.id}) }}"
-                                   class="text-sm text-gray-400 hover:text-white transition">Modifier</a>
-                            </div>
+            {% for entry in articles %}
+                {% set article = entry.article %}
+                {% set gradientClass = loop.index is even ? 'from-gray-800 to-gray-900' : 'from-gray-900 to-gray-800' %}
+                <div class="group bg-gradient-to-br {{ gradientClass }} rounded-xl border border-gray-700 shadow-md transition-all duration-500 hover:shadow-[0_4px_40px_rgba(139,92,246,0.1)] hover:ring-1 hover:ring-violet-500 overflow-hidden flex flex-col justify-between">
+                    {% if entry.image %}
+                        <div class="relative overflow-hidden">
+                            {% if article.categorie %}
+                                {% set categoryColors = {
+                                    'Chronique': 'bg-violet-600',
+                                    'Actu': 'bg-pink-500',
+                                    'Playlist': 'bg-blue-500',
+                                    'Interview': 'bg-yellow-500',
+                                    'Découverte': 'bg-green-500',
+                                    'Live': 'bg-red-500',
+                                    'Classement': 'bg-indigo-500',
+                                    'Sortie': 'bg-teal-500',
+                                    'Analyse': 'bg-orange-500',
+                                    'Insolite': 'bg-rose-700'
+                                } %}
+                                {% set colorClass = categoryColors[article.categorie] ?? 'bg-gray-600' %}
+                                <span class="absolute top-3 left-3 {{ colorClass }} text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg uppercase tracking-wider z-10">
+                                    {{ article.categorie }}
+                                </span>
+                            {% endif %}
+                            {% if article.datePublication and article.datePublication > "now"|date_modify("-7 days") %}
+                                <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow z-10">Nouveau</span>
+                            {% endif %}
+                            <img src="{{ entry.image }}" alt="Image de {{ article.artiste }}" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105 will-change-transform">
+                        </div>
+                    {% endif %}
+                    <div class="p-6 flex flex-col justify-between flex-grow">
+                        <div class="flex-grow">
+                            <h2 class="text-2xl lg:text-3xl font-extrabold mb-2 text-violet-400">{{ article.titre }}</h2>
+                            <p class="text-sm text-gray-400 mb-4">Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}</p>
+                            <p class="text-gray-300 mb-4 line-clamp-3">{{ article.contenu|u.truncate(160, '…') }}</p>
+                            <p class="text-sm text-gray-500 italic">Artiste : {{ article.artiste }}</p>
+                        </div>
+                        <div class="mt-6 flex justify-between items-center">
+                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-sm font-semibold text-white bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded-md shadow-md duration-300">En savoir plus</a>
+                            <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="text-sm text-gray-400 hover:text-white hover:bg-gray-400/10 px-3 py-1 rounded-md transition">Modifier</a>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
+        </div>
         {% else %}
             <p class="text-gray-400 mt-6 text-center">Aucun article pour le moment.</p>
         {% endif %}

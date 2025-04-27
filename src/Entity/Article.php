@@ -45,6 +45,13 @@ class Article
     #[Assert\NotBlank(message: "Le nom de l'artiste est requis.")]
     #[Assert\Length(max: 255)]
     private ?string $artiste = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(
+        max: 100,
+        maxMessage: "La catégorie ne doit pas dépasser {{ limit }} caractères."
+    )]
+    private ?string $categorie = null;
     
     #[ORM\Column]
     #[Assert\NotNull(message: "La date de publication est obligatoire.")]
@@ -151,6 +158,17 @@ class Article
                 $commentaire->setArticle(null);
             }
         }
+
+        return $this;
+    }
+    public function getCategorie(): ?string
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?string $categorie): static
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }
