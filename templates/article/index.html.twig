@@ -1,43 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article index{% endblock %}
+{% block title %}Tous les articles{% endblock %}
 
 {% block body %}
-    <h1>Article index</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    {% include 'partials/header.html.twig' %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Contenu</th>
-                <th>Slug</th>
-                <th>Artiste</th>
-                <th>DatePublication</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for article in articles %}
-            <tr>
-                <td>{{ article.id }}</td>
-                <td>{{ article.titre }}</td>
-                <td>{{ article.contenu }}</td>
-                <td>{{ article.slug }}</td>
-                <td>{{ article.artiste }}</td>
-                <td>{{ article.DatePublication ? article.DatePublication|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_article_show', {'id': article.id}) }}">show</a>
-                    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
-                </td>
-            </tr>
+    <div class="container mx-auto px-6 pt-36 pb-16">
+        <div class="flex items-center justify-between mb-10">
+            <h1 class="text-3xl font-extrabold">📰 Tous les articles</h1>
+            <a href="{{ path('app_article_new') }}"
+               class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-md transition">
+                + Nouvel article
+            </a>
+        </div>
+
+        {% if articles is not empty %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for entry in articles %}
+                    {% set article = entry.article %}
+                    <div class="bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition duration-300 flex flex-col justify-between overflow-hidden">
+                        {% if entry.image %}
+                            <img src="{{ entry.image }}" alt="Image de {{ article.artiste }}"
+                                 class="w-full h-48 object-cover">
+                        {% endif %}
+                        <div class="p-6 flex flex-col justify-between flex-grow">
+                            <div>
+                                <h2 class="text-2xl font-bold mb-2 text-violet-400">{{ article.titre }}</h2>
+                                <p class="text-sm text-gray-400 mb-4">
+                                    Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}
+                                </p>
+                                <p class="text-gray-300 mb-4 line-clamp-3">{{ article.contenu|u.truncate(160, '…') }}</p>
+                                <p class="text-sm text-gray-500 italic">Artiste : {{ article.artiste }}</p>
+                            </div>
+                            <div class="mt-6 flex justify-between items-center">
+                                <a href="{{ path('app_article_show', {'id': article.id}) }}"
+                                   class="text-sm text-violet-400 hover:text-violet-300 transition">Voir</a>
+                                <a href="{{ path('app_article_edit', {'id': article.id}) }}"
+                                   class="text-sm text-gray-400 hover:text-white transition">Modifier</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <p class="text-gray-400 mt-6 text-center">Aucun article pour le moment.</p>
+        {% endif %}
+    </div>
 
-    <a href="{{ path('app_article_new') }}">Create new</a>
+    {% include 'partials/footer.html.twig' %}
+</div>
 {% endblock %}

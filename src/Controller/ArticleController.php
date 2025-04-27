@@ -22,10 +22,21 @@ use Symfony\Component\Messenger\MessageBusInterface;
 final class ArticleController extends AbstractController
 {
     #[Route(name: 'app_article_index', methods: ['GET'])]
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(ArticleRepository $articleRepository, DeezerService $deezerService): Response
     {
+        $articles = $articleRepository->findAll();
+        $articlesWithImages = [];
+
+        foreach ($articles as $article) {
+            $artistInfo = $deezerService->getArtistInfo($article->getArtiste());
+            $articlesWithImages[] = [
+                'article' => $article,
+                'image' => $artistInfo['image'] ?? null,
+            ];
+        }
+
         return $this->render('article/index.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $articlesWithImages,
         ]);
     }
 

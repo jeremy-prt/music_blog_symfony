@@ -28,7 +28,7 @@ class DeezerService
         return [
             'name' => $artist['name'],
             'link' => $artist['link'],
-            'image' => $artist['picture_medium'],
+            'image' => $artist['picture_xl'],
             'topTracks' => $topTracks['data'] ?? [],
         ];
     }
