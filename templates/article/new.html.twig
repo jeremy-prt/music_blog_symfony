@@ -3,27 +3,80 @@
 {% block title %}Nouvel article{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Créer un nouvel article</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    {% include 'partials/header.html.twig' %}
 
-        {# Affichage global des erreurs du formulaire #}
-        {% if form.vars.errors|length > 0 %}
-            <div class="alert alert-danger">
-                {{ form_errors(form) }}
+    <div class="flex-grow flex items-center justify-center px-4 py-24">
+        <div class="bg-gray-900 text-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 space-y-6">
+            <h2 class="text-3xl font-extrabold text-center">Créer un nouvel article</h2>
+
+            {% if form.vars.errors|length > 0 %}
+                <div class="bg-red-600 text-white p-3 rounded mb-4 text-sm">
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
+            {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+                <div>
+                    <label for="titre" class="block text-sm text-gray-400 mb-1">Titre</label>
+                    <input type="text" id="titre" name="article[titre]" placeholder="Titre de l'article" class="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-violet-500 duration-300">
+                    {{ form_errors(form.titre) }}
+                </div>
+
+                <div>
+                    <label for="slug" class="block text-sm text-gray-400 mb-1">Slug</label>
+                    <input type="text" id="slug" name="article[slug]" placeholder="ex: chronique-drake" class="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-violet-500 duration-300">
+                    {{ form_errors(form.slug) }}
+                </div>
+
+                <div>
+                    <label for="artiste" class="block text-sm text-gray-400 mb-1">Artiste associé à l'article</label>
+                    <input type="text" id="artiste" name="article[artiste]" placeholder="Nom de l'artiste" class="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-violet-500 duration-300">
+                    {{ form_errors(form.artiste) }}
+                </div>
+
+                <div>
+                    <label for="contenu" class="block text-sm text-gray-400 mb-1">Contenu</label>
+                    <textarea id="contenu" name="article[contenu]" placeholder="Contenu de l'article..." rows="5" class="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-violet-500 duration-300"></textarea>
+                    {{ form_errors(form.contenu) }}
+                </div>
+
+                <div>
+                    <label for="categorie" class="block text-sm text-gray-400 mb-1">Catégorie</label>
+                    <select id="categorie" name="article[categorie]" class="w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-violet-500 duration-300">
+                        <option value="">Choisir une catégorie</option>
+                        <option value="Chronique">Chronique</option>
+                        <option value="Actu">Actu</option>
+                        <option value="Playlist">Playlist</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Découverte">Découverte</option>
+                        <option value="Live">Live</option>
+                        <option value="Classement">Classement</option>
+                        <option value="Sortie">Sortie</option>
+                        <option value="Analyse">Analyse</option>
+                        <option value="Insolite">Insolite</option>
+                    </select>
+                    {{ form_errors(form.categorie) }}
+                </div>
+
+                <div style="display: none;">
+                    {{ form_widget(form._token) }}
+                </div>
+
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 rounded-md transition">
+                    Publier
+                </button>
+            {{ form_end(form, { render_rest: false }) }}
+
+            <div class="text-center mt-4">
+                <a href="{{ path('app_article_index') }}" class="text-sm text-gray-400 hover:text-white underline transition">
+                    Retour à la liste
+                </a>
             </div>
-        {% endif %}
-
-        {# Inclusion du formulaire #}
-        {{ form_start(form) }}
-            {{ form_row(form.titre) }}
-            {{ form_row(form.slug) }}
-            {{ form_row(form.artiste) }}
-            {{ form_row(form.datePublication) }}
-            {{ form_row(form.contenu) }}
-
-            <button class="btn btn-success mt-3">Publier</button>
-        {{ form_end(form) }}
-
-        <a href="{{ path('app_article_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+        </div>
     </div>
+
+    {% include 'partials/footer.html.twig' %}
+</div>
 {% endblock %}

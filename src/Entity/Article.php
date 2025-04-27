@@ -54,7 +54,6 @@ class Article
     private ?string $categorie = null;
     
     #[ORM\Column]
-    #[Assert\NotNull(message: "La date de publication est obligatoire.")]
     private ?\DateTimeImmutable $DatePublication = null;
 
     /**

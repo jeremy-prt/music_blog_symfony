@@ -16,8 +16,9 @@
         </div>
 
         {% if articles is not empty %}
+            {% set sortedArticles = articles|sort((a, b) => b.article.datePublication <=> a.article.datePublication) %}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {% for entry in articles %}
+            {% for entry in sortedArticles %}
                 {% set article = entry.article %}
                 {% set gradientClass = loop.index is even ? 'from-gray-800 to-gray-900' : 'from-gray-900 to-gray-800' %}
                 <div class="group bg-gradient-to-br {{ gradientClass }} rounded-xl border border-gray-700 shadow-md transition-all duration-500 hover:shadow-[0_4px_40px_rgba(139,92,246,0.1)] hover:ring-1 hover:ring-violet-500 overflow-hidden flex flex-col justify-between">
@@ -49,7 +50,8 @@
                     {% endif %}
                     <div class="p-6 flex flex-col justify-between flex-grow">
                         <div class="flex-grow">
-                            <h2 class="text-lg sm:text-xl md:text-2xl lg:text-2xl font-extrabold mb-2 text-violet-400">{{ article.titre }}</h2>                            <p class="text-sm text-gray-400 mb-4">Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}</p>
+                            <h2 class="text-lg sm:text-xl md:text-2xl lg:text-2xl font-extrabold mb-2 text-violet-400">{{ article.titre }}</h2>
+                            <p class="text-sm text-gray-400 mb-4">Publié le {{ article.datePublication ? article.datePublication|date('d/m/Y à H:i') : '—' }}</p>
                             <p class="text-gray-300 mb-4 line-clamp-3">{{ article.contenu|u.truncate(160, '…') }}</p>
                             <p class="text-sm text-gray-500 italic">Artiste : {{ article.artiste }}</p>
                         </div>

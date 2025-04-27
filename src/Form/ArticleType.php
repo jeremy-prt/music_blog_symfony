@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Article;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,10 +16,22 @@ class ArticleType extends AbstractType
             ->add('titre')
             ->add('slug')
             ->add('artiste')
-            ->add('categorie')
-            ->add('datePublication', DateTimeType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date de publication',
+            ->add('categorie', ChoiceType::class, [
+                'choices' => [
+                    'Chronique' => 'Chronique',
+                    'Actu' => 'Actu',
+                    'Playlist' => 'Playlist',
+                    'Interview' => 'Interview',
+                    'Découverte' => 'Découverte',
+                    'Live' => 'Live',
+                    'Classement' => 'Classement',
+                    'Sortie' => 'Sortie',
+                    'Analyse' => 'Analyse',
+                    'Insolite' => 'Insolite'
+                ],
+                'placeholder' => 'Choisir une catégorie',
+                'required' => false,
+                'label' => 'Catégorie'
             ])
             ->add('contenu');
     }

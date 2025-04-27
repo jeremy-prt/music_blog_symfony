@@ -52,6 +52,7 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $article->setDatePublication(new \DateTimeImmutable()); // Définit automatiquement la date
             $em->persist($article);
             $em->flush();
 
@@ -87,11 +88,9 @@ final class ArticleController extends AbstractController
 
         $deezerArtist = $deezerService->getArtistInfo($article->getArtiste());
 
-        $pdfPath = '/exports/article_' . $article->getId() . '.pdf'; // pour l'URL publique
-
+        $pdfPath = '/exports/article_' . $article->getId() . '.pdf';
         $projectDir = $this->getParameter('kernel.project_dir');
-        $fullPath = $projectDir . '/public' . $pdfPath; // chemin absolu sur le disque
-
+        $fullPath = $projectDir . '/public' . $pdfPath;
         $pdfExists = file_exists($fullPath);
 
         return $this->render('article/show.html.twig', [
@@ -142,7 +141,7 @@ final class ArticleController extends AbstractController
     public function export(Article $article, MessageBusInterface $bus): Response
     {
         $bus->dispatch(new ExportPdf($article->getId()));
-    
+
         $this->addFlash('success', 'Export en cours. Le PDF sera disponible sous peu.');
         return $this->redirectToRoute('app_article_show', ['id' => $article->getId()]);
     }
