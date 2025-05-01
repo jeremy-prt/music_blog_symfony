@@ -56,6 +56,11 @@ php bin/console doctrine:fixtures:load
 
 Chaque utilisateur inscrit via le formulaire sera **par défaut un compte USER**, sans droits admin.
 
+```bash
+# Démarrer le serveur
+php symfony server:start -d
+```
+
 ---
 
 ## Génération de PDF (fonction asynchrone)
