@@ -136,7 +136,7 @@
         if (popup && closePopup) {
           const popupClosedAt = localStorage.getItem('popupClosedAt');
           const now = new Date().getTime();
-          if (!popupClosedAt || now - popupClosedAt > 1 * 60 * 1000) {
+          if (!popupClosedAt || now - popupClosedAt > 4000 * 60 * 1000) {
             popup.classList.remove('hidden');
           }
           closePopup.addEventListener('click', () => {
