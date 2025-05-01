@@ -22,8 +22,18 @@ final class ExportPdfMessageHandler
         $article = $this->articleRepository->find($message->getArticleId());
         if (!$article) return;
 
+        $logoPath = __DIR__ . '/../../public/images/logo.png';
+        $logoBase64 = null;
+
+        if (file_exists($logoPath)) {
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoMime = mime_content_type($logoPath);
+            $logoBase64 = 'data:' . $logoMime . ';base64,' . $logoData;
+        }
+
         $html = $this->twig->render('pdf/article.html.twig', [
             'article' => $article,
+            'logoBase64' => $logoBase64,
         ]);
 
         $dompdf = new Dompdf();

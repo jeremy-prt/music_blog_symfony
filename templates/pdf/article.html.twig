@@ -4,62 +4,102 @@
     <meta charset="UTF-8">
     <title>{{ article.titre }}</title>
     <style>
-      @page {
-          margin: 0;
-      }
+        @page {
+            margin: 0;
+        }
 
-      body {
-          font-family: Arial, sans-serif;
-          background-color: #1f2937;
-          color: #f9fafb;
-          margin: 0;
-          padding: 40px;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1f2937;
+            color: #f9fafb;
+            margin: 0;
+            padding: 50px 60px;
+        }
 
-      h1 {
-          color: #c084fc;
-          font-size: 28px;
-          margin-bottom: 10px;
-      }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
 
-      p {
-          margin-bottom: 12px;
-          line-height: 1.6;
-      }
+        .logo {
+            width: 60px;
+            height: 60px;
+        }
 
-      .label {
-          font-weight: bold;
-          color: #a1a1aa;
-      }
+        .site-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c084fc;
+        }
 
-      .divider {
-          border-top: 1px solid #374151;
-          margin: 30px 0;
-      }
+        h1 {
+            color: #c084fc;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
 
-      .footer {
-          font-size: 12px;
-          color: #9ca3af;
-          text-align: center;
-          margin-top: 40px;
-      }
-  </style>
+        .info-block {
+            background-color: #111827;
+            border-left: 4px solid #c084fc;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #a1a1aa;
+        }
+
+        .divider {
+            border-top: 1px solid #374151;
+            margin: 30px 0;
+        }
+
+        p {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #9ca3af;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer strong {
+            color: #facc15;
+        }
+    </style>
 </head>
 <body>
 
+    <div class="header">
+        <div class="site-title">Le meilleur blog musique de sa génération</div>
+        {% if logoBase64 %}
+            <img src="{{ logoBase64 }}" alt="Logo" style="width: 80px; height: auto; margin-top: 10px;">
+        {% endif %}
+    </div>
+
     <h1>{{ article.titre }}</h1>
-
-    <p><span class="label">Artiste :</span> {{ article.artiste }}</p>
-    <p><span class="label">Date :</span> {{ article.datePublication|date('d/m/Y') }}</p>
-
-    <div class="divider"></div>
 
     <p>{{ article.contenu|nl2br }}</p>
 
     <div class="divider"></div>
 
+    <div class="info-block">
+        <p><span class="label">Artiste :</span> {{ article.artiste }}</p>
+        <p><span class="label">Date de publication :</span> {{ article.datePublication|date('d/m/Y') }}</p>
+    </div>
+
+    <div class="divider"></div>
+
     <div class="footer">
-        Ce document a été généré automatiquement.
+        Ce document a été généré automatiquement dans le cadre du projet scolaire Symfony - Music Blog.<br>
+        Oui c'est pas ouf comme template de pdf.
     </div>
 
 </body>
