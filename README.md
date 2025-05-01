@@ -162,9 +162,3 @@ Content-Type: application/json
 ## Tests
 
 Pas de tests automatisés dans ce projet, mais les fonctionnalités principales ont été validées manuellement (inscription, authentification, API CRUD, export PDF, Deezer API, etc.).
-
----
-
-## Remarques
-
-Ce projet n’a pas été designé de façon poussée par manque de temps. L’objectif principal était la **validation fonctionnelle**.
