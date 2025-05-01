@@ -125,69 +125,64 @@
     {% include 'partials/footer.html.twig' %}
 </div>
 
-<script>
-  document.addEventListener('turbo:load', () => {
-    const pdfUrl = "{{ asset('/exports/article_' ~ article.id ~ '.pdf') }}";
-    const exportBtn = document.getElementById('export-pdf-btn');
-    const container = document.getElementById('pdf-button-container');
-    const button = document.getElementById('open-pdf-button');
-    const status = document.getElementById('pdf-status');
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // === POPUP ===
+        const popup = document.getElementById('popup');
+        const closePopup = document.getElementById('close-popup');
 
-    if (!exportBtn || !container || !button || !status) return;
-
-    const cacheBypassUrl = () => pdfUrl + '?v=' + Date.now();
-
-    const hideAll = () => {
-      exportBtn.classList.add('hidden');
-      container.classList.add('hidden');
-      button.classList.add('hidden');
-      status.classList.add('hidden');
-    };
-
-    const showGenerate = () => {
-      exportBtn.classList.remove('hidden');
-      container.classList.add('hidden');
-      button.classList.add('hidden');
-      status.classList.add('hidden');
-    };
-
-    const showView = () => {
-      exportBtn.classList.add('hidden');
-      container.classList.remove('hidden');
-      button.classList.remove('hidden');
-      status.classList.add('hidden');
-      button.href = cacheBypassUrl();
-    };
-
-    fetch(cacheBypassUrl(), { method: 'HEAD', cache: 'no-store' })
-      .then(response => {
-        if (response.ok) {
-          showView();
-        } else {
-          showGenerate();
+        if (popup && closePopup) {
+          const popupClosedAt = localStorage.getItem('popupClosedAt');
+          const now = new Date().getTime();
+          if (!popupClosedAt || now - popupClosedAt > 1 * 60 * 1000) {
+            popup.classList.remove('hidden');
+          }
+          closePopup.addEventListener('click', () => {
+            popup.classList.add('hidden');
+            localStorage.setItem('popupClosedAt', new Date().getTime());
+          });
         }
-      })
-      .catch(() => {
-        showGenerate();
-      });
 
-    exportBtn.addEventListener('click', () => {
-      showGenerate();
-      status.classList.remove('hidden');
+        // === PDF ===
+        const exportBtn = document.getElementById('export-pdf-btn');
+        const container = document.getElementById('pdf-button-container');
+        const openBtn = document.getElementById('open-pdf-button');
+        const status = document.getElementById('pdf-status');
+        const pdfUrl = "{{ asset('/exports/article_' ~ article.id ~ '.pdf') }}";
+        const cacheBypassUrl = () => pdfUrl + '?t=' + Date.now();
 
-      fetch("{{ path('app_article_export_pdf', {'id': article.id}) }}")
-        .then(() => {
-          const interval = setInterval(() => {
-            fetch(cacheBypassUrl(), { method: 'HEAD', cache: 'no-store' })
-              .then(response => {
-                if (response.ok) {
-                  showView();
-                  clearInterval(interval);
-                }
-              });
-          }, 4000);
+        function togglePdfButtons(showGenerate) {
+          exportBtn.classList.toggle('hidden', !showGenerate);
+          container.classList.toggle('hidden', showGenerate);
+          openBtn.classList.toggle('hidden', showGenerate);
+          if (!showGenerate) openBtn.href = cacheBypassUrl();
+        }
+
+        fetch(cacheBypassUrl(), { method: 'HEAD', cache: 'no-store' })
+          .then(res => togglePdfButtons(!res.ok))
+          .catch(() => togglePdfButtons(true));
+
+        exportBtn.addEventListener('click', () => {
+          status.classList.remove('hidden');
+          exportBtn.classList.add('hidden');
+
+          fetch("{{ path('app_article_export_pdf', {'id': article.id}) }}")
+            .then(() => {
+              const interval = setInterval(() => {
+                fetch(cacheBypassUrl(), { method: 'HEAD', cache: 'no-store' })
+                  .then(res => {
+                    if (res.ok) {
+                      togglePdfButtons(false);
+                      status.classList.add('hidden');
+                      clearInterval(interval);
+                    }
+                  });
+              }, 4000);
+            });
         });
-    });
-  });
-</script>
+      });
+    </script>
+{% endblock %}
 {% endblock %}
