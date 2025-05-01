@@ -32,10 +32,11 @@ cd music_blog_symfony
 composer install
 ```
 
-### configurer l'accès BDD dans le .env
-
-Modifier la ligne DATABASE_URL en fonction de votre config locale MAMP ou WAMP par exemple :
+```bash
+# Configurer l'accès BDD dans le .env
+# Modifier la ligne DATABASE_URL en fonction de votre config locale MAMP ou WAMP par exemple :
 DATABASE_URL="mysql://root:root@127.0.0.1:8889/music_blog?serverVersion=8.0.40"
+```
 
 ```bash
 # Créer la base de données
@@ -102,7 +103,7 @@ Avant d’utiliser les routes protégées, connectez-vous en POST sur :
 
 > Le token JWT vous sera retourné. Il est requis pour les routes POST / PUT / DELETE.
 
-### Acc§s aux routes protégées (POST / PUT / DELETE)
+### Accès aux routes protégées (POST / PUT / DELETE)
 
 - Ajouter un article :  
   `POST /api/articles`
