@@ -1,4 +1,4 @@
-# 🎵 Music Blog — Projet Symfony (TP scolaire)
+# Music Blog — Projet Symfony (TP scolaire)
 
 ![Aperçu du site](public/images/preview_site.png)
 
@@ -6,7 +6,7 @@ Ce projet a été réalisé dans le cadre d’un **travail pratique scolaire** v
 
 ---
 
-## 🚀 Technologies utilisées
+## Technologies utilisées
 
 - **PHP** : 8.3.14
 - **Symfony** : 7.2.5
@@ -19,30 +19,36 @@ Ce projet a été réalisé dans le cadre d’un **travail pratique scolaire** v
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ```bash
 # Cloner le dépôt
-git https://github.com/jeremy-prt/music_blog_symfony.git
-cd music-blog
+git clone https://github.com/jeremy-prt/music_blog_symfony.git
+cd music_blog_symfony
+```
 
-# Installer les dépendances
+```bash
+# Installer les dépendances nécessaires au projet
 composer install
+```
 
-# Copier le fichier .env et configurer l'accès BDD
-cp .env .env.local
-# Modifier la ligne DATABASE_URL en fonction de votre config locale MAMP par exemple :
-# DATABASE_URL="mysql://root:root@127.0.0.1:8889/music_blog?serverVersion=8.0.40"
+### configurer l'accès BDD dans le .env
 
+Modifier la ligne DATABASE_URL en fonction de votre config locale MAMP ou WAMP par exemple :
+DATABASE_URL="mysql://root:root@127.0.0.1:8889/music_blog?serverVersion=8.0.40"
+
+```bash
 # Créer la base de données
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
+```
 
+```bash
 # Charger les fixtures
 php bin/console doctrine:fixtures:load
 ```
 
-> ℹ️ Les fixtures insèrent **des articles de test** ainsi que **deux comptes utilisateurs** :
+> Les fixtures insèrent **des articles de test** ainsi que **deux comptes utilisateurs** :
 >
 > - **Administrateur** : `admin@blog.test` / `adminpass`
 > - **Utilisateur classique** : `user@blog.test` / `userpass`
@@ -51,9 +57,9 @@ Chaque utilisateur inscrit via le formulaire sera **par défaut un compte USER**
 
 ---
 
-## 📄 Génération de PDF (fonction asynchrone)
+## Génération de PDF (fonction asynchrone)
 
-L’export des articles au format PDF se fait via Messenger en tâche de fond.  
+L’export des articles au format PDF se fait via Messenger en tâche de fond avec messenger.  
 Pour que cela fonctionne :
 
 ```bash
@@ -61,11 +67,17 @@ php bin/console messenger:consume async -vv
 ```
 
 > Un bouton "Générer le PDF" est disponible sur chaque page d’article.  
-> Une fois généré, un lien "Voir le PDF" apparaîtra automatiquement.
+> Une fois généré, un bouton "Voir le PDF" apparaîtra automatiquement.
 
 ---
 
-## 🔌 API REST
+## Commentaires
+
+Pour publier un commentaire, accédez à la page de détail d’un article. Vous devez être connecté pour pouvoir commenter.
+
+---
+
+## API REST
 
 ### Accès aux routes publiques (GET)
 
@@ -78,24 +90,24 @@ php bin/console messenger:consume async -vv
 
 Avant d’utiliser les routes protégées, connectez-vous en POST sur :
 
-```http
-POST /login
-Content-Type: application/json
+- Login :  
+  `POST /api/login`
 
+```http
 {
   "email": "admin@blog.test",
   "password": "adminpass"
 }
 ```
 
-> Le token JWT vous sera retourné. Il est requis pour les routes POST / PUT.
+> Le token JWT vous sera retourné. Il est requis pour les routes POST / PUT / DELETE.
 
----
+### Acc§s aux routes protégées (POST / PUT / DELETE)
 
-### Ajouter un article
+- Ajouter un article :  
+  `POST /api/articles`
 
 ```http
-POST /api/articles
 Authorization: Bearer VOTRE_JWT_ICI
 Content-Type: application/json
 
@@ -108,40 +120,45 @@ Content-Type: application/json
 }
 ```
 
----
-
-### Modifier un article
+- Ajouter un article :  
+  `POST /api/articles/{id}`
 
 ```http
-PUT /api/articles/{id}
+Authorization: Bearer VOTRE_JWT_ICI
+Content-Type: application/json
+
+{
+  "titre": "Nouvel article API modifié",
+  "slug": "nouvel-article-api-modifie",
+  "contenu": "Ceci est un article posté via l'API.",
+  "artiste": "Zion",
+  "datePublication": "2025-05-01T10:30:00"
+}
+```
+
+- Supprimer un article :  
+  `DELETE /api/articles/{id}`
+
+```http
 Authorization: Bearer VOTRE_JWT_ICI
 Content-Type: application/json
 ```
 
 ---
 
-## 📁 Structure utile
+## Structure utile
 
 - `src/DataFixtures/UserFixtures.php` : définition des utilisateurs de test.
 - `src/DataFixtures/ArticleFixtures.php` : articles d’exemple insérés.
-- `src/Message/ExportPdf.php` : message utilisé pour la génération PDF.
-- `src/MessageHandler/ExportPdfMessageHandler.php` : handler associé.
 
 ---
 
-## 🧪 Tests
+## Tests
 
 Pas de tests automatisés dans ce projet, mais les fonctionnalités principales ont été validées manuellement (inscription, authentification, API CRUD, export PDF, Deezer API, etc.).
 
 ---
 
-## 📝 Remarques
+## Remarques
 
-Ce projet n’a pas été designé de façon poussée par manque de temps. L’objectif principal était la **validation fonctionnelle**.  
-Une **popup d'avertissement** s’affiche sur certaines pages pour en informer.
-
----
-
-## 📷 Capture d’écran
-
-![Capture](public/images/capture_article_detail.png)
+Ce projet n’a pas été designé de façon poussée par manque de temps. L’objectif principal était la **validation fonctionnelle**.
